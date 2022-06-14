@@ -1,0 +1,19 @@
+Page
+    Beranda
+        Pencarian
+        MostPopularMovies [image lazy load]
+            Detail
+    Favorit
+        Pencarian
+            Detail
+
+    Pengaturan
+        Bahasa
+        API Key IMDB custom
+
+    Tentangindex.html
+index.js
+assets
+home
+old
+template

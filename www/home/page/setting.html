@@ -1,0 +1,235 @@
+<div class="container">
+    <!-- Setting Card-->
+    <div class="d-flex flex-row justify-content-between align-items-center mb-2">
+        <div>
+            <p class="m-0 p-0 fw-bold">API Settings</p>
+        </div>
+        <div class="d-flex flex-row">
+            <button type="button" class="btn btn-sm btn-primary d-flex justify-content-between align-items-center me-2"
+                data-bs-toggle="modal" id="btn-tamban" data-bs-target="#myModal">
+                <i class="bi bi-plus"></i> Tambah API
+            </button>
+            <button type="button" class="btn btn-sm btn-warning d-flex justify-content-between align-items-center"
+                data-bs-toggle="modal" id="btn-tamban" data-bs-target="#myModalReset">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset
+            </button>
+        </div>
+    </div>
+
+    <div id="cus-alert"></div>
+    <ul class="ps-0 chat-user-list" id="api-list">
+
+    </ul>
+</div>
+
+<div class="modal fade bottom-align-modal" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalLabel"></h6>
+                <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="myForm">
+                    <input type="hidden" id="key_old">
+                    <div class="form-group">
+                        <label class="form-label" for="nama">Nama</label>
+                        <input class="form-control form-control-clicked" id="nama" name="nama" type="text" required
+                            placeholder="Nama API">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="key">API Key</label>
+                        <input class="form-control form-control-clicked" id="key" name="key" type="text" required
+                            placeholder="API Key">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="status">Aktifkan API</label>
+                        <select class="form-select form-control-clicked" id="status" name="status"
+                            aria-label="Aktifkan/Gunakan API">
+                            <option value="1" selected="">Iya</option>
+                            <option value="0">Tidak</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal">Tutup</button>
+                <button class="btn btn-sm btn-success" type="submit" form="myForm">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bottom-align-modal" id="myModalDelete" tabindex="-1" aria-labelledby="myModalDeleteLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalDeleteLabel">Hapus API</h6>
+                <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah anda yakin akan menghapus API ini ?</p>
+                <span class="fw-bold me-2">Nama:</span><span id="nama-hapus"></span>
+                <br><span class="fw-bold me-2">API Key:</span><span id="key-hapus"></span>
+                <br><span class="fw-bold me-2">Aktifkan API:</span><span id="status-hapus"></span>
+                <form action="" id="myFormHapus">
+                    <input id="key-hapus-main" name="key-hapus-main" type="hidden">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal">Tutup</button>
+                <button class="btn btn-sm btn-danger" type="submit" form="myFormHapus">Hapus</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bottom-align-modal" id="myModalReset" tabindex="-1" aria-labelledby="myModalResetLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="myModalResetLabel">Reset API</h6>
+                <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah anda yakin akan mengebalikan list API ke default ?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal">Tutup</button>
+                <button class="btn btn-sm btn-danger" type="button" id="resetApi">Hapus</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var isUbah = false;
+    $(document).ready(function () {
+        $('#btn-tamban').click(function () {
+            $('#myModalLabel').html('Tambah API');
+            if (isUbah) {
+                $('#nama').val('');
+                $('#key').val('');
+                $('#key_old').val('');
+                $('#status').val('1');
+            }
+            isUbah = false;
+        })
+
+        // simpan
+        $('#myForm').submit(function (e) {
+            e.preventDefault();
+            const key_old = $('#key_old').val();
+            const key = $('#key').val();
+            const status = $('#status').val() == 1 ? true : false;
+            const nama = $('#nama').val();
+            if (key_old != '') {
+                const query = api.set(key_old, key, nama, status);
+                if (query) {
+                    alertjs.setWithJQ('#cus-alert', 'success', 'API Key berhasil ubah');
+                    renderApi();
+                } else {
+                    alertjs.setWithJQ('#cus-alert', 'danger', 'API key sudah terdaftar');
+                }
+            } else {
+                const query = api.add(key, nama, status);
+                if (query) {
+                    alertjs.setWithJQ('#cus-alert', 'success', 'API Key berhasil ditambahkan');
+                    renderApi();
+                } else {
+                    alertjs.setWithJQ('#cus-alert', 'danger', 'API key sudah terdaftar');
+                }
+            }
+            $('#myModal').modal('hide');
+        })
+
+        $('#myFormHapus').submit(function (e) {
+            e.preventDefault();
+            const key = $('#key-hapus-main').val();
+            api.delete(key);
+            alertjs.setWithJQ('#cus-alert', 'success', 'API Key berhasil dihapus');
+            renderApi();
+            $('#myModalDelete').modal('hide');
+        })
+
+        $('#resetApi').click(() => {
+            api.reset();
+            alertjs.setWithJQ('#cus-alert', 'success', 'API Key berhasil direset');
+            renderApi();
+            $('#myModalReset').modal('hide');
+        })
+    })
+
+    function renderApi() {
+        const api_all = api.getAll();
+        const api_html = $('#api-list');
+        if (api_all.length < 0) return 0;
+
+        api_html.html('');
+        for (e in api_all) {
+            const data = api_all[e];
+            const status_str = data.status ? `<span class="text-success">Dapat digunakan</span>` : `<span class="text-danger">Tidak dapat digunakan</span>`;
+            const status = data.status ? '1' : '0';
+            api_html.append(`
+                <li class="p-3">
+                    <a class="d-flex" href="javascript:void(0)">
+                        <div class="chat-user-info">
+                            <h6 class="text-truncate mb-0">${data.username}</h6>
+                                ${status_str}
+                            </h6>
+                            <div class="last-chat">
+                                <p class="text-truncate mb-0"><span class="fw-bold">Key:</span> ${data.key}</p>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dropstart chat-options-btn">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" data-nama="${data.username}" data-key="${data.key}" data-status="${status}" onclick="settingApiUbah(this)">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Ubah
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" data-nama="${data.username}" data-key="${data.key}"  data-status="${status}" onclick="settingApiHapus(this)">
+                                    <i class="bi bi-trash"></i>
+                                    Hapus
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            `);
+        }
+
+        return 1;
+    }
+    renderApi();
+
+    function settingApiUbah(input) {
+        isUbah = true;
+        const data = input.dataset;
+        $('#myModalLabel').html('Ubah API');
+        $('#nama').val(data.nama);
+        $('#key').val(data.key);
+        $('#key_old').val(data.key);
+        $('#status').val(data.status);
+        $('#myModal').modal('show');
+    }
+
+    function settingApiHapus(input) {
+        const data = input.dataset;
+        $('#nama-hapus').html(data.nama);
+        $('#key-hapus').html(data.key);
+        $('#key-hapus-main').val(data.key);
+        $('#status-hapus').html(data.status == '1' ? 'Iya' : 'Tidak');
+        $('#myModalDelete').modal('show');
+    }
+</script>
