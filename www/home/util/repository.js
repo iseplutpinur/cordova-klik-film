@@ -1,5 +1,6 @@
 const api = new ApiKey();
 const alertjs = new AlertJS();
+const favorite = new Favorite();
 
 const storage = {
     delete: (key) => {

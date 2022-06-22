@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="element-heading pt-2 pb-0 d-flex justify-content-between mb-3">
+        <div>
+            <h6 class="ps-1">Film Popular Terbaru</h6>
+        </div>
+        <div>
+            <button class="btn btn-info btn-xs"
+                onclick="favorite.reset(); callPage('./page/favorite.html', 'favorite')">
+                <i class="bi bi-arrow-repeat"></i> Reset Data
+            </button>
+        </div>
+    </div>
+    <div class="row g-3 justify-content-center" id="favorite-body-container">
+
+    </div>
+</div>
+
+<script>
+    function favorite_render(datas) {
+        const body = $('#favorite-body-container');
+        for (f in datas) {
+            const e = datas[f];
+            const fav_btn = favorite.getById(e.id) ? `
+                    <div onclick="favorite.add(\`${e.id}\`, \`${e.title}\`, \`${e.image}\`, \`${e.description}\`, this)" data-is_fav="1"><i class="bi bi-heart-fill text-danger" style="font-size: 1.7em;"></i></div>
+                ` : `
+                    <div onclick="favorite.add(\`${e.id}\`, \`${e.title}\`, \`${e.image}\`, \`${e.description}\`, this)" data-is_fav="0"><i class="bi bi-heart" style="font-size: 1.7em;"></i></div>
+                `;
+            body.append(`
+                <div class="col-12 col-md-8 col-lg-7 col-xl-6">
+                    <div class="card">
+                        <img src=""
+                            data-src="${e.image}"
+                            class="card-img-top lazy" style="object-fit: cover; object-position: center !important; height: 200px;"
+                            alt="${e.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${e.title}</h5>
+                            <p class="card-text">${e.description} </p>
+                            <div class="d-flex flex-row-reverse align-content-center">
+                                <div class="ms-2"><a href="javascript:void(0)"
+                                    onclick="callPage('./page/detail.html', 'favorite', {name:'favorite', current_page:'./page/favorite.html', movie_id: '${e.id}', image: '${e.image}', desc:\`${e.description}\`, title:\`${e.title}\`})"
+                                    class="btn btn-primary">Lihat Selengkapnya</a></div>
+                                    ${fav_btn}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `);
+        }
+        $('.lazy').lazy();
+    }
+
+    favorite_render(favorite.getAll());
+</script>

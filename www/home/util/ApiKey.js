@@ -72,6 +72,17 @@ class ApiKey {
         }
     }
 
+    setStatus(key, status) {
+        let api = this.api.find(api => api.key === key);
+        if (api) {
+            api.status = status;
+            this.#refresStorage();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     getAll() {
         return this.api;
     }

@@ -26,7 +26,7 @@
 
     </div>
 </div>
-
+<!-- bi bi-heart-fill me-3 text-danger -->
 <script>
     $(document).ready(function () {
         if (locStrGet('search') != null) {
@@ -64,7 +64,8 @@
                     console.log(data);
                     home_render(data.items);
                     if (data.errorMessage != '') {
-                        api.set(get_api.key, false);
+
+                        api.setStatus(get_api.key, false);
                         home_ajax();
                     }
                 },
@@ -85,6 +86,11 @@
             const body = $('#home-body-container');
             for (f in datas) {
                 const e = datas[f];
+                const fav_btn = favorite.getById(e.id) ? `
+                    <div onclick="favorite.add(\`${e.id}\`, \`${e.fullTitle}\`, \`${e.image}\`, \`${e.crew}\`, this)" data-is_fav="1"><i class="bi bi-heart-fill text-danger" style="font-size: 1.7em;"></i></div>
+                ` : `
+                    <div onclick="favorite.add(\`${e.id}\`, \`${e.fullTitle}\`, \`${e.image}\`, \`${e.crew}\`, this)" data-is_fav="0"><i class="bi bi-heart" style="font-size: 1.7em;"></i></div>
+                `;
                 body.append(`
                 <div class="col-12 col-md-8 col-lg-7 col-xl-6">
                     <div class="card">
@@ -98,10 +104,10 @@
                                 <span class="fw-bold">Rating:</span> ${e.imDbRating}
                             </p>
                             <div class="d-flex flex-row-reverse align-content-center">
-                                <div><a href="javascript:void(0)"
-                                    onclick="callPage('./page/detail.html', 'home', {current_page:'./page/home.html', movie_id: '${e.id}', image: '${e.image}'})"
+                                <div class="ms-2"><a href="javascript:void(0)"
+                                    onclick="callPage('./page/detail.html', 'home', {name:'home',current_page:'./page/home.html', movie_id: '${e.id}', image: '${e.image}', desc:\`${e.crew}\`, title:\`${e.fullTitle}\`})"
                                     class="btn btn-primary">Lihat Selengkapnya</a></div>
-                                <div><i class="bi bi-heart me-3" style="font-size: 1.7em;"></i></div>
+                                    ${fav_btn}
                             </div>
                         </div>
                     </div>

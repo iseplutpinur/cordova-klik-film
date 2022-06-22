@@ -3,7 +3,7 @@
     <div class="header-content position-relative d-flex align-items-center justify-content-between">
         <!-- Back Button -->
         <div class="back-button">
-            <a href="javascript:void(0)" onclick="callPage(locStrGet('props').current_page, 'home')">
+            <a href="javascript:void(0)" onclick="callPage(locStrGet('props').current_page, locStrGet('props').name)">
                 <svg class="bi bi-arrow-left-short" width="32" height="32" viewBox="0 0 16 16" fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -24,8 +24,11 @@
     <div class="pt-3 d-block"></div>
     <div class="blog-details-post-thumbnail position-relative">
         <img class="w-100 rounded-lg" src="" id="detail-image" alt="">
-        <a class="post-bookmark position-absolute card-badge" href="#">
-            <i class="bi bi-heart"></i>
+        <a class="post-bookmark position-absolute card-badge" href="#" style="
+            width: 2.5em;
+            height: 2.5em;
+        ">
+            <div id="heart-container" class="pt-2"></div>
         </a>
     </div>
 </div>
@@ -38,11 +41,23 @@
 
 <script>
     $(document).ready(function () {
+        const get_api = api.get();
+        if (get_api == null) {
+            alert('API Load Maximum');
+            return false;
+        }
         const props = locStrGet('props');
+        const fav_btn = favorite.getById(props.movie_id) ? `
+                    <div onclick="favorite.add(\`${props.movie_id}\`, \`${props.title}\`, \`${props.image}\`, \`${props.desc}\`, this)" data-is_fav="1"><i class="bi bi-heart-fill text-danger" style="font-size: 1.7em;"></i></div>
+                ` : `
+                    <div onclick="favorite.add(\`${props.movie_id}\`, \`${props.title}\`, \`${props.image}\`, \`${props.desc}\`, this)" data-is_fav="0"><i class="bi bi-heart" style="font-size: 1.7em;"></i></div>
+                `;
+        $('#heart-container').html(fav_btn);
+
         $('#detail-image').attr('src', props.image);
         setLoader(true);
         $.ajax({
-            url: `https://imdb-api.com/id/API/Wikipedia/k_qwa0nu1j/${props.movie_id}`,
+            url: `https://imdb-api.com/id/API/Wikipedia/${get_api.key}/${props.movie_id}`,
             dataType: "json",
             type: "GET",
             success: function (data) {

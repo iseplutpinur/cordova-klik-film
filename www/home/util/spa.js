@@ -22,9 +22,9 @@ const menus = [
         `,
     },
     {
-        name: 'pages',
+        name: 'favorite',
         title: 'Favorite',
-        url: './page/pages.html',
+        url: './page/favorite.html',
         icon: `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
@@ -82,6 +82,7 @@ function callPage(page, name, props = {}, history = true) {
         dataType: "text",
         type: "GET",
         success: function (data) {
+            setLoader(false);
             const data_nav = getNavigation(name);
             if (!data_nav) return;
             if (history) window.history.pushState(data_nav, data_nav.title, `${config.base_url}?page=${data_nav.name}`);
