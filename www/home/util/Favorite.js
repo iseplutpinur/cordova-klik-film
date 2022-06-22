@@ -3,6 +3,7 @@ class Favorite {
         const get_local = localStorage.getItem(this.#key());
         if (get_local === null) {
             localStorage.setItem(this.#key(), JSON.stringify([]));
+            this.favorite = [];
         } else {
             this.favorite = JSON.parse(get_local);
         }
