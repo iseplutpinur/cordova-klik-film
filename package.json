@@ -5,7 +5,9 @@
   "description": "Klik film adalah sebuah aplikasi yang berisi informasi yang berkaitan dengan film",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "android": "cordova run android",
+    "android-build": "cordova build android"
   },
   "keywords": [
     "ecosystem:cordova"
